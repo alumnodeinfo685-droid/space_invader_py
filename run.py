@@ -3,6 +3,7 @@ from src.infrastructure.pygame_infrastructure import (
     PygameGameLoopAdapter,
     PygameInputAdapter,
     PygameOutputAdapter,
+    SystemRandomProvider,
 )
 from src.use_cases.game_engine import GameEngine
 
@@ -10,7 +11,7 @@ from src.use_cases.game_engine import GameEngine
 def main() -> None:
     config = GameConfig()
     state = GameState(config)
-    engine = GameEngine(state)
+    engine = GameEngine(state, SystemRandomProvider())
     engine.create_enemies()
 
     input_adapter = PygameInputAdapter(state, engine)

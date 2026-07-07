@@ -1,6 +1,18 @@
-from typing import Protocol, Optional
+from collections.abc import Sequence
+from typing import Optional, Protocol, TypeVar
 
 from src.domain.game_state import GameState
+
+
+T = TypeVar("T")
+
+
+class RandomProvider(Protocol):
+    def choice(self, sequence: Sequence[T]) -> T:
+        ...
+
+    def randint(self, a: int, b: int) -> int:
+        ...
 
 
 class GameInputAdapter(Protocol):

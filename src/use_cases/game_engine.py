@@ -1,13 +1,13 @@
 
-from random import choice
-
+from src.adapters.interfaces import RandomProvider
 from src.domain.entities import Bullet, Enemy, Player
 from src.domain.game_state import GameState
 
 
 class GameEngine:
-    def __init__(self, state: GameState) -> None:
+    def __init__(self, state: GameState, random_provider: RandomProvider) -> None:
         self.state = state
+        self._random = random_provider
 
     def create_enemies(self) -> None:
         self.state.enemies.clear()
@@ -101,7 +101,7 @@ class GameEngine:
         if not bottom_enemies:
             return
 
-        shooter = choice(bottom_enemies)
+        shooter = self._random.choice(bottom_enemies)
         self.state.enemy_last_shot_time_ms = current_time_ms
         self.state.enemy_next_shot_delay_ms = self._random_enemy_shot_delay()
         bullet_x = shooter.rect.x + (shooter.rect.width - self.state.config.BULLET_WIDTH) // 2
@@ -111,7 +111,10 @@ class GameEngine:
         )
 
     def _random_enemy_shot_delay(self) -> int:
-        return choice(range(self.state.config.ENEMY_SHOOT_INTERVAL_MIN_MS, self.state.config.ENEMY_SHOOT_INTERVAL_MAX_MS + 1))
+        return self._random.randint(
+            self.state.config.ENEMY_SHOOT_INTERVAL_MIN_MS,
+            self.state.config.ENEMY_SHOOT_INTERVAL_MAX_MS,
+        )
 
     def _bottom_enemies_by_column(self) -> list[Enemy]:
         columns: dict[int, Enemy] = {}

@@ -1,10 +1,20 @@
+import random
+
 import pygame
 import sys
 from typing import Optional
 
-from src.adapters.interfaces import GameInputAdapter, GameOutputAdapter, GameLoopAdapter
+from src.adapters.interfaces import GameInputAdapter, GameOutputAdapter, GameLoopAdapter, RandomProvider
 from src.domain.game_state import GameState
 from src.use_cases.game_engine import GameEngine
+
+
+class SystemRandomProvider(RandomProvider):
+    def choice(self, sequence):
+        return random.choice(sequence)
+
+    def randint(self, a: int, b: int) -> int:
+        return random.randint(a, b)
 
 
 class PygameInputAdapter(GameInputAdapter):
