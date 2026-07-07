@@ -53,6 +53,7 @@ class PygameOutputAdapter(GameOutputAdapter):
         self.screen.fill((0, 0, 0))
         self._draw_player(state)
         self._draw_bullets(state)
+        self._draw_enemy_bullets(state)
         self._draw_enemies(state)
         self._draw_score(state)
         self._draw_status_message(state)
@@ -65,9 +66,14 @@ class PygameOutputAdapter(GameOutputAdapter):
         pygame.draw.rect(self.screen, (0, 255, 0), (rect.x + rect.width // 2 - 5, rect.y - 10, 10, 10))
 
     def _draw_bullets(self, state: GameState) -> None:
-        for bullet in state.bullets:
+        for bullet in state.player_bullets:
             rect = bullet.rect
             pygame.draw.rect(self.screen, (255, 255, 0), (rect.x, rect.y, rect.width, rect.height))
+
+    def _draw_enemy_bullets(self, state: GameState) -> None:
+        for bullet in state.enemy_bullets:
+            rect = bullet.rect
+            pygame.draw.rect(self.screen, (255, 0, 255), (rect.x, rect.y, rect.width, rect.height))
 
     def _draw_enemies(self, state: GameState) -> None:
         for enemy in state.enemies:
@@ -102,5 +108,6 @@ class PygameGameLoopAdapter(GameLoopAdapter):
     def run(self) -> None:
         while True:
             move_direction = self.input_adapter.handle_input(self.engine.state)
-            self.engine.update(move_direction)
+            current_time_ms = pygame.time.get_ticks()
+            self.engine.update(move_direction, current_time_ms)
             self.output_adapter.draw(self.engine.state)

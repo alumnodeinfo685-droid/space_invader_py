@@ -22,7 +22,10 @@ class GameConfig:
     MAX_BULLETS = 4
     BULLET_WIDTH = 6
     BULLET_HEIGHT = 15
-    BULLET_SPEED = -8
+    PLAYER_BULLET_SPEED = -8
+    ENEMY_BULLET_SPEED = 6
+    ENEMY_SHOOT_INTERVAL_MIN_MS = 1000
+    ENEMY_SHOOT_INTERVAL_MAX_MS = 3000
 
 
 class GameState:
@@ -36,11 +39,14 @@ class GameState:
             config.PLAYER_SPEED,
             config.SCREEN_WIDTH,
         )
-        self.bullets: List[Bullet] = []
+        self.player_bullets: List[Bullet] = []
+        self.enemy_bullets: List[Bullet] = []
         self.enemies: List[Enemy] = []
         self.score = 0
         self.enemy_direction_x = config.ENEMY_DIRECTION_X
         self.enemy_drop_y = config.ENEMY_DROP_Y
+        self.enemy_last_shot_time_ms = 0
+        self.enemy_next_shot_delay_ms = config.ENEMY_SHOOT_INTERVAL_MIN_MS
         self.game_over = False
         self.victory = False
         self.paused = False
